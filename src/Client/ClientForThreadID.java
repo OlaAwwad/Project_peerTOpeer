@@ -12,7 +12,7 @@ public class ClientForThreadID {
 	public static void main(String[] args) {
 
 		InetAddress serverAddress;
-        String serverName = "192.168.108.10";
+        String serverName = "127.0.0.1";
 
 		try {
 			serverAddress = InetAddress.getByName(serverName);

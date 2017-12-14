@@ -10,7 +10,7 @@ public class ServerMultiThread {
 
 		InetAddress localAddress = null;
 		ServerSocket mySkServer;
-		String interfaceName = "eth1";
+		String interfaceName = "eth6";
 
 		int ClientNo = 1;
 		
