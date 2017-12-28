@@ -8,13 +8,26 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import Server.CustomFormatter;
 
 public class LoginFrame extends JFrame{
 	
@@ -29,14 +42,27 @@ public class LoginFrame extends JFrame{
 	private Font font25 = new Font ("Century Gothic",Font.BOLD, 25);
 	private Font font15 = new Font ("Century Gothic",Font.PLAIN, 20);
 	
+	private ImageIcon snowman = new ImageIcon("Icon/snowman.png");
+	private JLabel piclabel = new JLabel(snowman);
+
+	
+	protected static Socket MySocket;
+	protected static ObjectInputStream input;
+	protected static ObjectOutputStream output;
+	private String serverName = "192.168.108.10";
+	private InetAddress serverAddress = null;
+	
 	public LoginFrame () {
 		
 		
 		//Basic configuration
-		super("P2P Nicolas Vlado");
+		super("Snowman Client");
+		
+		pnlForm.setBackground(new Color(255,204,153));
+		pnlButtons.setBackground(new Color(255,204,153));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(500, 200));
-		setSize(620, 414);
+		setSize(620, 500);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout(0,0));
 		setBackground(new Color(255, 128, 0));
@@ -46,7 +72,7 @@ public class LoginFrame extends JFrame{
 		btnCancel.setmouseColor(255, 163, 153);
 		
 		
-		pnlForm.setLayout(new GridLayout(4, 1));
+		pnlForm.setLayout(new GridLayout(5, 1));
 		pnlButtons.setLayout(new FlowLayout());
 		
 		txtUser.setColumns(15);
@@ -57,13 +83,14 @@ public class LoginFrame extends JFrame{
 		txtUser.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		txtPassword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		
+		txtUser.setSize(new Dimension(500,80));
+		txtPassword.setSize(new Dimension(500,80));
 
 		txtUser.setSize(new Dimension(300, 40));
 		
-		
+		pnlForm.add(piclabel);
 		pnlForm.add(lblUser);
 		pnlForm.add(txtUser);
-
 		pnlForm.add(lblPassword);
 		pnlForm.add(txtPassword);
 		
@@ -82,8 +109,7 @@ public class LoginFrame extends JFrame{
 		
 		btnConnect.addActionListener(new Connect_Click());
 		btnCancel.addActionListener(new Cancel_Click());
-		
-		
+
 		
 	}
 	
@@ -100,10 +126,61 @@ public class LoginFrame extends JFrame{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
 		
+			String username = txtUser.getText();
+			String password = new String(txtPassword.getPassword());
+		
+			if(username.equals("") || password.isEmpty()) {
+				txtUser.setText("");
+				JOptionPane.showMessageDialog(null, "Username and password can't be empty !");
+				txtPassword.selectAll();	
+			}
+			else {
+			try {
+				
+				//Get the server address
+				serverAddress = InetAddress.getByName(serverName);
+
+				//Connection to the server
+				MySocket = new Socket(serverAddress, 65535);
+				output = new ObjectOutputStream(MySocket.getOutputStream());
+				input = new ObjectInputStream(MySocket.getInputStream());
+
+
+
+				
+				//Send the login details
+				output.writeObject("login");
+				output.flush();
+				output.writeObject(username);
+				output.flush();
+				output.writeObject(password);
+				output.flush();
+				output.writeObject(MySocket.getLocalAddress().getHostAddress());
+				output.flush();
+			
+				if((boolean)input.readObject()) {
+					dispose();
+					ClientFrame clientFrame = new ClientFrame(username, MySocket.getLocalAddress().getHostAddress());
+					clientFrame.setVisible(true);
+					new CustomFormatter().newLog(Level.INFO, "Correct login");
+				} else {
+					JOptionPane.showMessageDialog(null, "Incorrect login");
+					txtPassword.selectAll();
+					new CustomFormatter().newLog(Level.WARNING, "Incorrect login");
+				}
+
+			} catch (UnknownHostException e1) {
+				new CustomFormatter().newLog(Level.SEVERE, e1.toString());
+			} catch (IOException e1) {
+				new CustomFormatter().newLog(Level.SEVERE, e1.toString());
+			} catch (ClassNotFoundException e1) {
+				new CustomFormatter().newLog(Level.SEVERE, e1.toString());
+			}
+			
+			}
+		
+		}
 	}
 	
 	
