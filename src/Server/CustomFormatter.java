@@ -77,9 +77,10 @@ public class CustomFormatter extends Formatter {
 				// On convertit le tableau de bytes de baos en chaîne de caractères
 				sb.append( new String( baos.toByteArray(), "UTF-8" ) );
 			}
-			
 			catch( Exception e )
-			{}
+			{
+				new CustomFormatter().newLog(Level.SEVERE, e.toString());
+			}
 		}
 		sb.append("\r\n");
 		return sb.toString();
@@ -89,7 +90,7 @@ public class CustomFormatter extends Formatter {
 	 * Add a new log to the log directory (level of the log, and a small description)
 	 */
 	public void newLog(Level level, String text) {
-		Logger myLogger = Logger.getLogger("Peer-to-peer Logger");
+		Logger myLogger = Logger.getLogger("Logs");
 
 		FileHandler fh = null;		
 						
@@ -98,7 +99,7 @@ public class CustomFormatter extends Formatter {
 		
 		// Create one file.log per month
 		try {
-			fh = new FileHandler("C:/logs/" + new SimpleDateFormat("MMYYYY").format(new Date()) + ".log", true);
+			fh = new FileHandler("C:/logs/" + new SimpleDateFormat("MM-YYYY").format(new Date()) + ".log", true);
 		} 
 		catch (SecurityException | IOException e) {
 			new CustomFormatter().newLog(Level.SEVERE, e.toString());

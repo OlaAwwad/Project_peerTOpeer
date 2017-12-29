@@ -1,7 +1,7 @@
 package Server;
 
 /**
-*  	Project name : PeerToPeer.
+*  	Project name : PeerToPeer
 *	Class : CommunicationClientServer
 *
 * 	Date of creation : 28.12.2017
@@ -47,21 +47,22 @@ public class CommunicationClientServer implements Runnable
 			while(true) {
 				message_distant = (String) ois.readObject();
 				
-				//login
+				// Login
 				if(message_distant.equals("login")) {
 					userName = (String) ois.readObject();
 					passWord = (String) ois.readObject();
 					ip = (String) ois.readObject();
 					port = (int) ois.readObject();
 					tempClient = new ExistedClient(userName, passWord, ip);
-					//if the user exists, we connect it.
+					
+					// If the user exists, we allow the connection
 					if(Main_ServerCo.listFilesOfClient.checkLogin(tempClient)) {
 						ous.writeObject(true);
 						Main_ServerCo.listFilesOfClient.getClient(Main_ServerCo.listFilesOfClient.getIndex(tempClient)).setPort(port);
 					} else
 						ous.writeObject(false);
 				}		
-				//send
+				// Send
 				else if(message_distant.equals("send")) {
 					File[] files = (File[])ois.readObject();
 					System.out.println(Arrays.toString(files));					
@@ -70,16 +71,17 @@ public class CommunicationClientServer implements Runnable
 						System.out.println(client.toString());
 					}
 				}
-				//displayFiles
+				// Display files of a client
 				else if(message_distant.equals("display")) {
 					ous.writeObject(Main_ServerCo.listFilesOfClient.getSize());
 					ous.flush();
 					for (int i=0 ; i<Main_ServerCo.listFilesOfClient.getSize(); i++) {
-						//send the informations about each file
-						System.out.println("Test 8 " + Arrays.toString(Main_ServerCo.listFilesOfClient.getClient(i).getListFiles()));
-						ous.writeObject(Main_ServerCo.listFilesOfClient.getClient(i).getip()+"\n");
-						ous.writeObject(Main_ServerCo.listFilesOfClient.getClient(i).getPort()+"\n");
-						ous.writeObject(Main_ServerCo.listFilesOfClient.getClient(i).getListFiles()+"\n");
+						
+						// Send & flush the informations about each file
+						System.out.println("TEST :" + Arrays.toString(Main_ServerCo.listFilesOfClient.getClient(i).getListFiles()));
+						ous.writeObject("IP: "+Main_ServerCo.listFilesOfClient.getClient(i).getip()+
+								"\n PORT: "+Main_ServerCo.listFilesOfClient.getClient(i).getPort()+
+								"\n FILE: "+Main_ServerCo.listFilesOfClient.getClient(i).getListFiles()+"\n");
 						ous.flush();
 					}
 				}
