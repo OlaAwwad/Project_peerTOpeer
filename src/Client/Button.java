@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
@@ -19,6 +20,21 @@ public class Button extends JButton{
 
 	public Button(String text) {
 		super(text);
+		setBackground(this.color);
+		
+		setFocusable(false);
+		setContentAreaFilled(false);
+		setBorder(new EmptyBorder(0, 0, 0, 0));
+		setPreferredSize(new Dimension(205, 70));	
+		setFont(font);	
+		setOpaque(true);
+		addMouseListener(new Mouse());
+		
+		
+	}
+	
+	public Button(String text, ImageIcon icon) {
+		super(text, icon);
 		setBackground(this.color);
 		
 		setFocusable(false);
