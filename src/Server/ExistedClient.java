@@ -26,7 +26,7 @@ public class ExistedClient implements Serializable {
 	private int port;
 	private File [] listFiles;
 
-	public ExistedClient (String userName, String passWord) 
+	public ExistedClient (String userName, String passWord, String ip) 
 	{
 		this.userName = userName;
 		this.passWord = passWord;

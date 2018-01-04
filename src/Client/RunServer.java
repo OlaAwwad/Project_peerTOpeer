@@ -11,21 +11,19 @@ public class RunServer implements Runnable{
 	private ServerSocket clientServerSocket;
 	private Socket clientSocket;
 	private InetAddress localaddress;
-	private int port;
+
 	
 	
 	
 	
-	public RunServer(int port) {
-		this.port=port;
-	}
+
 	
 	@Override
 	public void run() {
 		try {
 			clientSocket = null;
 			localaddress = InetAddress.getLocalHost();
-			clientServerSocket = new ServerSocket(port, 10, localaddress);
+			clientServerSocket = new ServerSocket(47000, 10, localaddress);
 			
 			while(true) {
 				//accept the connection

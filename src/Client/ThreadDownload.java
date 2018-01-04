@@ -35,7 +35,7 @@ public class ThreadDownload implements Runnable{
 			output.flush();
 			
 			//Send the path of the file
-			output.writeObject(ClientFrame.listServerFiles.getSelectedValue().getFile().getAbsolutePath());
+			output.writeObject(ClientFrame.listServerFiles.getSelectedValue().getAbsolutePath());
 			output.flush();
 			
 			

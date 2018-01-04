@@ -16,28 +16,28 @@ import java.util.ArrayList;
 
 public class LoginClients {
 
-	private ArrayList <ExistedClient> listLogin = new ArrayList<ExistedClient>();
+	private static ArrayList <ExistedClient> listLogin = new ArrayList<ExistedClient>();
 
 	public LoginClients () 
 	{
-		listLogin.add(new ExistedClient("Nico", "Nico"));
-		listLogin.add(new ExistedClient("Vlado", "Vlado"));
+		listLogin.add(new ExistedClient("Nico", "Nico", null));
+		listLogin.add(new ExistedClient("Vlado", "Vlado", null));
 	}
 
 
-	public ArrayList <ExistedClient> getListLogin() {
+	public static ArrayList <ExistedClient> getListLogin() {
 		return listLogin;
 	}
 	
-	public int getSize() {
+	public static int getSize() {
 		return listLogin.size();
 	}
 	
-	public ExistedClient getClient(int index) {
+	public static ExistedClient getClient(int index) {
 		return listLogin.get(index);
 	}
 	
-	public int getIndex(ExistedClient client) {
+	public static int getIndex(ExistedClient client) {
 		return listLogin.indexOf(client);
 	}
 	

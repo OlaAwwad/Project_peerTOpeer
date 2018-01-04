@@ -242,7 +242,7 @@ public class ClientFrame extends JFrame{
 		south.setPreferredSize(new Dimension(820, 100));
 		south.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
-		clientLabel = new JLabel(name);
+		clientLabel = new JLabel(name+" "+ip);
 		clientLabel.setFont(font18);
 		clientLabel.setHorizontalAlignment(JLabel.CENTER);
 		clientLabel.setPreferredSize(new Dimension(621, 60));
@@ -275,7 +275,7 @@ public class ClientFrame extends JFrame{
 		
 		createClientFolder(name);
 		
-//		runServer();
+		runServer();
 				
 	}
 	
@@ -859,8 +859,8 @@ public class ClientFrame extends JFrame{
 	  	// ------------------------------------------------------------------------------------------------------ //
 		public void download() throws IOException, InterruptedException
 		{
-			JButton[] buttons = {connectButton,sendButton,getButton,loadButton,addButton};
-			Thread t = new Thread(new DownloadFile(buttons));
+			
+			Thread t = new Thread(new ThreadDownload());
 			t.start();	
 		}	
 	  	// ====================================================================================================== //
