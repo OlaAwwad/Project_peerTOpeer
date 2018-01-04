@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -58,6 +59,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import Server.CustomFormatter;
+
 //====================================================================================================== //
 //----------------------------------------- Class : ClientFrame -----------------------------------------//
 //====================================================================================================== //
@@ -70,9 +73,9 @@ import javax.swing.text.StyledDocument;
 public class ClientFrame extends JFrame{
 	
 	/*Client identification*/
-	protected static String name = "Vlado";
-	protected static String id = "";
-	protected static String ip = "";
+	protected static String name ;
+	protected static String id;
+	protected static String ip;
 	protected static File clientFolder;
 	protected static int nbClients;
 	/*Server IP*/
@@ -131,11 +134,15 @@ public class ClientFrame extends JFrame{
 	
  	protected static Logger myLogger = Logger.getLogger("TestLog");
  	
- 	public ClientFrame() {
+ 	public ClientFrame(String username, String ip) {
 		super("Peer to Peer");
+		ClientFrame.name=username;
+		this.ip=ip;
+		
+		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setSize(826, 614);
+		setSize(621, 614);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout(0,0));
 		addWindowListener(new ExitClick());	
@@ -168,11 +175,12 @@ public class ClientFrame extends JFrame{
 		cardPanel.add(content, "content");
 		content.add(north, BorderLayout.NORTH);
 		content.add(center, BorderLayout.CENTER);
-		center.setLayout(new BorderLayout(0,0));		
-		center.add(centerCenter,BorderLayout.CENTER);	
+		center.setLayout(new GridLayout(1,2));		
+		
+		center.add(filesPanel);
+		center.add(clientsPanel);
 	
-		centerCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		centerCenter.add(filesPanel);
+		
 		filesPanel.add(addButton, BorderLayout.SOUTH);
 		filesPanel.add(myFiles, BorderLayout.NORTH);
 		filesPanel.add(scrollClient, BorderLayout.CENTER);
@@ -190,7 +198,7 @@ public class ClientFrame extends JFrame{
 		listClientFiles.setEnabled(false);
 		listClientFiles.setForeground(Color.WHITE);
 		listClientFiles.setCellRenderer(new DefaultListCellRenderer());
-		listClientFiles.setBackground(new Color(34, 49, 63));
+		listClientFiles.setBackground(new Color(224,224,224));
 		
 		scrollClient.setPreferredSize(new Dimension(200, 390));
 		scrollClient.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -202,7 +210,7 @@ public class ClientFrame extends JFrame{
 		scrollText.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollText.setPreferredSize(new Dimension(420, 420));
 		scrollText.setBorder(null);
-		scrollText.setBackground(new Color(34, 49, 63));
+		scrollText.setBackground(new Color(255,204,153));
 		text.setOpaque(false);
 
 		MutableAttributeSet attributes = new SimpleAttributeSet();
@@ -213,7 +221,7 @@ public class ClientFrame extends JFrame{
 		attributes.addAttribute(StyleConstants.CharacterConstants.FontSize, 15);
 		doc.setParagraphAttributes(0, 0, attributes, false);
 	
-		centerCenter.add(clientsPanel);
+		
 
 		clientsPanel.add(clientsList, BorderLayout.NORTH);
 		clientsList.setPreferredSize(new Dimension(200, 30));
@@ -228,7 +236,7 @@ public class ClientFrame extends JFrame{
 		listServerFiles.setForeground(Color.WHITE);
 		listServerFiles.addListSelectionListener(new SelectFile());
 		listServerFiles.setCellRenderer(new DefaultListCellRenderer());
-		listServerFiles.setBackground(new Color(34, 49, 63));
+		listServerFiles.setBackground(new Color(224,224,224));
 	
 		content.add(south, BorderLayout.SOUTH);
 		south.setPreferredSize(new Dimension(820, 100));
@@ -236,7 +244,8 @@ public class ClientFrame extends JFrame{
 
 		clientLabel = new JLabel(name);
 		clientLabel.setFont(font18);
-		clientLabel.setPreferredSize(new Dimension(820, 60));
+		clientLabel.setHorizontalAlignment(JLabel.CENTER);
+		clientLabel.setPreferredSize(new Dimension(621, 60));
 		
 		north.add(clientLabel);;
 		
@@ -251,7 +260,7 @@ public class ClientFrame extends JFrame{
 		north.setPreferredSize(new Dimension(820, 65));
 		north.setMaximumSize(new Dimension(820, 65));
 		north.setMinimumSize(new Dimension(820, 65));
-		north.setBackground(new Color(22, 160, 133));
+		north.setBackground(new Color(255,204,153));
 		
 		centerCenter.setPreferredSize(new Dimension(820, 450));
 		centerCenter.setMaximumSize(new Dimension(820, 450));
@@ -260,9 +269,12 @@ public class ClientFrame extends JFrame{
 		south.setPreferredSize(new Dimension(820, 70));
 		south.setMaximumSize(new Dimension(820, 70));
 		south.setMinimumSize(new Dimension(820, 70));
-		south.setBackground(new Color(52, 73, 94));
+		south.setBackground(new Color(255,204,153));
 				
 		enableButtons();
+		
+		createClientFolder(name);
+		
 //		runServer();
 				
 	}
@@ -523,7 +535,7 @@ public class ClientFrame extends JFrame{
 						
 						if(clientsList.getItemCount() == 0)
 						{
-							write("NO OTHER CLIENT CONNECTED", "severe");
+							new CustomFormatter().newLog(Level.SEVERE, "NO OTHER CLIENT CONNECTED");
 						}
 					} 
 					catch (ClassNotFoundException e1) 
@@ -778,16 +790,13 @@ public class ClientFrame extends JFrame{
 		public void sendInfo() throws IOException, BadLocationException
 		{	
 			/*Envoie de la commande post*/
-			write("sending post message", "info");
 			oOut.writeObject("post");
 			oOut.flush();
 			
 			/*Envoie de la liste de fichiers du client*/
-			write("sending list of files", "info");
 			oOut.writeObject(getListOfFiles(clientFolder.getAbsolutePath()));
 			oOut.flush();
 
-			write("FILES SHARED SUCCESSFULLY", "warning");
 
 			
 		}
@@ -807,7 +816,7 @@ public class ClientFrame extends JFrame{
 		public void getFiles() throws IOException, ClassNotFoundException, BadLocationException
 		{		
 			/*Envoie de la commande get*/
-			write("sending get message", "info");
+			
 			oOut.writeObject("get");
 			oOut.flush();
 
@@ -829,13 +838,10 @@ public class ClientFrame extends JFrame{
 				if(client.getListOfFiles()  != null  && client.getListOfFiles().length !=0 && (!client.getName().equals(ClientFrame.id) && !client.getIp().equals(ClientFrame.ip)))
 				{
 					clientsList.addItem(client);
-					write("RECEIVED "+client.getListOfFiles().length+" FILES FROM "+client.getName().toUpperCase(), "warning");
+					
 					continue;
 				}
-				else if(!client.getName().equals(ClientFrame.id) && !client.getIp().equals(ip))
-				{
-					write(client.getName().toUpperCase()+" DOESN'T SHARE FILES","severe");
-				}
+				
 			}
 		}
 

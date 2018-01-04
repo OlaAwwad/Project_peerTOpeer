@@ -151,14 +151,18 @@ public class LoginFrame extends JFrame{
 				
 				//Send the login details
 				output.writeObject("login");
+				System.out.println("Send login");
 				output.flush();
 				output.writeObject(username);
+				System.out.println("username");
 				output.flush();
 				output.writeObject(password);
+				System.out.println("pwd");
 				output.flush();
 				output.writeObject(MySocket.getLocalAddress().getHostAddress());
 				output.flush();
-			
+				
+				System.out.println("OK");
 				if((boolean)input.readObject()) {
 					dispose();
 					ClientFrame clientFrame = new ClientFrame(username, MySocket.getLocalAddress().getHostAddress());

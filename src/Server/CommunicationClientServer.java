@@ -40,23 +40,27 @@ public class CommunicationClientServer implements Runnable
 
 	@Override
 	public void run() {
+		System.out.println("Thread started");
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			ous = new ObjectOutputStream(socket.getOutputStream());
 			
 			while(true) {
 				message_distant = (String) ois.readObject();
-				
+				System.out.println("Reciev : "+ message_distant);
 				// Login
 				if(message_distant.equals("login")) {
-					userName = (String) ois.readObject();
-					passWord = (String) ois.readObject();
-					ip = (String) ois.readObject();
-					port = (int) ois.readObject();
-					tempClient = new ExistedClient(userName, passWord, ip);
 					
+					userName = (String) ois.readObject();
+					System.out.println("Reciev : "+ userName);
+					passWord = (String) ois.readObject();
+					System.out.println("Reciev : "+ passWord);
+					tempClient = new ExistedClient(userName, passWord);
+					System.out.println("Test login");
+					ous.writeObject(true);
 					// If the user exists, we allow the connection
 					if(Main_ServerCo.listFilesOfClient.checkLogin(tempClient)) {
+						System.out.println("LOGIN OK !");
 						ous.writeObject(true);
 						Main_ServerCo.listFilesOfClient.getClient(Main_ServerCo.listFilesOfClient.getIndex(tempClient)).setPort(port);
 					} else

@@ -20,8 +20,8 @@ public class LoginClients {
 
 	public LoginClients () 
 	{
-		listLogin.add(new ExistedClient("Nico", "Nico", "192.168.108.1"));
-		listLogin.add(new ExistedClient("Vlado", "Vlado", "192.168.108.10"));
+		listLogin.add(new ExistedClient("Nico", "Nico"));
+		listLogin.add(new ExistedClient("Vlado", "Vlado"));
 	}
 
 

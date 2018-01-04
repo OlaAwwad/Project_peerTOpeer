@@ -67,6 +67,7 @@ public class Main_ServerCo {
 			while (true) {
 				socket = serverSocket.accept();
 				new CustomFormatter().newLog(Level.INFO, "Client with IP " + socket.getInetAddress().getHostAddress() + " connected");
+				System.out.println("Starting thread !!!!");
 				Thread t = new Thread(new CommunicationClientServer(socket));
 				t.start();
 			}

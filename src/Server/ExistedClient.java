@@ -26,11 +26,11 @@ public class ExistedClient implements Serializable {
 	private int port;
 	private File [] listFiles;
 
-	public ExistedClient (String userName, String passWord, String ip) 
+	public ExistedClient (String userName, String passWord) 
 	{
 		this.userName = userName;
 		this.passWord = passWord;
-		this.ip = ip;
+	
 	}
 
 	public String getUserName() {
@@ -85,8 +85,12 @@ public class ExistedClient implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
+		System.out.println("Check login");
 		ExistedClient c = (ExistedClient) o;
-		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) return true;
+		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) { 
+			System.out.println("OK");
+			return true;
+		}
 		else
 			return false;
 	}
