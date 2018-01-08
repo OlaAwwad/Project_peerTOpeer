@@ -13,6 +13,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.JProgressBar;
 
+import Server.ExistedClient;
+
 public class ThreadDownload implements Runnable{
 
 	@Override
@@ -22,7 +24,7 @@ public class ThreadDownload implements Runnable{
 			InetAddress serverAddress = null;
 			
 			//Get ip from server
-			serverAddress = InetAddress.getByName(((Client)ClientFrame.clientsList.getSelectedItem()).getIp());
+			serverAddress = InetAddress.getByName(((ExistedClient)ClientFrame.clientsList.getSelectedItem()).getip());
 			
 			//Connecting to the server
 			MySocket = new Socket(serverAddress, 47000);
@@ -31,10 +33,12 @@ public class ThreadDownload implements Runnable{
 			ObjectOutputStream output = new ObjectOutputStream(MySocket.getOutputStream());
 			
 			//Send the command 
+			System.out.println("Sending download to "+ serverAddress);
 			output.writeObject("download");
 			output.flush();
 			
 			//Send the path of the file
+			System.out.println("Sending the path");
 			output.writeObject(ClientFrame.listServerFiles.getSelectedValue().getAbsolutePath());
 			output.flush();
 			

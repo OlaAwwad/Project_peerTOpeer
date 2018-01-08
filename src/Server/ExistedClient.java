@@ -19,27 +19,14 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class ExistedClient implements Serializable {
-	private static final long serialVersionUID = 1L;
 	private String userName;
 	private String passWord;
 	private String ip;
-	private boolean connected=false;
-	
-	
-	public boolean isConnected() {
-		return connected;
-	}
 
-	public void Connected() {
-		this.connected = true;
-	}
-	
-	public void disConnected() {
-		this.connected = false;
-	}
-
-	private int port;
 	private File [] listFiles;
+	
+
+	
 
 	public ExistedClient (String userName, String passWord, String ip) 
 	{
@@ -49,10 +36,11 @@ public class ExistedClient implements Serializable {
 		
 	}
 	
-	public ExistedClient (String userName, String passWord, String ip, File[] files) 
+	
+	
+	public ExistedClient (String userName,  String ip, File[] files) 
 	{
 		this.userName = userName;
-		this.passWord = passWord;
 		this.ip=ip;
 		this.listFiles=files;
 	}
@@ -78,6 +66,7 @@ public class ExistedClient implements Serializable {
 	}
 
 	public void setListFiles(File[] listFiles) {
+		System.out.println("Files setted for "+ userName);
 		this.listFiles = listFiles;
 	}
 
@@ -89,31 +78,24 @@ public class ExistedClient implements Serializable {
 		this.ip = ip;
 	}
 	
-	public int getPort() {
-		return port;
-	}
 
-	public void setPort(int port) {
-		this.port = port;
-	}
 	
 	@Override
 	public String toString() {
-		return userName + ";" + ip + ";"+ Arrays.toString(listFiles);
+		return userName+" " +ip;
 	}
 
 	/**
 	 * Method that tests the username
 	 * AND the password 
 	 */
-	@Override
-	public boolean equals(Object o) {
-		ExistedClient c = (ExistedClient) o;
-		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) { 
-			this.Connected();
-			return true;
-		}
-		else
-			return false;
-	}
+//	@Override
+//	public boolean equals(Object o) {
+//		ExistedClient c = (ExistedClient) o;
+//		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) { 
+//			return true;
+//		}
+//		else
+//			return false;
+//	}
 }

@@ -34,10 +34,12 @@ public class AcceptClient implements Runnable {
 		
 			message=(String)input.readObject();
 		
+			
 			if(message.equals("download")) {
-				
+				System.out.println("Download request");
 				//Get the path of the file to download
 				String path =(String)input.readObject();
+				System.out.println(path+" download");
 				File dwnlFile = new File(path);
 				FileInputStream fileInput = new FileInputStream(dwnlFile);
 				

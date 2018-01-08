@@ -31,7 +31,7 @@ import javax.swing.JTextField;
 
 import Server.CustomFormatter;
 
-public class LoginFrame extends JFrame implements KeyListener{
+public class LoginFrame extends JFrame {
 	
 	private JLabel lblUser = new JLabel("Username");
 	private JLabel lblPassword = new JLabel("Password");
@@ -57,9 +57,10 @@ public class LoginFrame extends JFrame implements KeyListener{
 	public LoginFrame () {
 		
 		
+		
 		//Basic configuration
 		super("Snowman Client");
-		
+		addKeyListener(new OkButton());
 		pnlForm.setBackground(new Color(255,204,153));
 		pnlButtons.setBackground(new Color(255,204,153));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -156,20 +157,16 @@ public class LoginFrame extends JFrame implements KeyListener{
 				
 				//Send the login details
 				output.writeObject("login");
-				System.out.println("Send login");
 				output.flush();
 				output.writeObject(username);
-				System.out.println("username");
 				output.flush();
 				output.writeObject(password);
-				System.out.println("pwd");
 				output.flush();
 				output.writeObject(MySocket.getLocalAddress().getHostAddress());
 				output.flush();
 				
-				System.out.println("CHECKING LOGIN ....");
+			
 				if((boolean)input.readObject()) {
-					System.out.println("LOGIN OK");
 					dispose();
 					ClientFrame clientFrame = new ClientFrame(username, MySocket.getLocalAddress().getHostAddress(), input, output, MySocket);
 					clientFrame.setVisible(true);
@@ -193,27 +190,33 @@ public class LoginFrame extends JFrame implements KeyListener{
 		}
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		
-		if (e.getKeyCode()==KeyEvent.VK_ENTER){
-            btnConnect.doClick();
+	class OkButton implements KeyListener{
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+			if (e.getKeyCode()==KeyEvent.VK_ENTER){
+	            btnConnect.doClick();
+			}
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+
+
 	
 	
 }

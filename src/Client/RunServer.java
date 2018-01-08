@@ -8,9 +8,9 @@ import java.net.UnknownHostException;
 
 public class RunServer implements Runnable{
 
-	private ServerSocket clientServerSocket;
-	private Socket clientSocket;
-	private InetAddress localaddress;
+	ServerSocket clientServerSocket;
+	Socket clientSocket;
+	InetAddress localaddress;
 
 	
 	
@@ -20,22 +20,30 @@ public class RunServer implements Runnable{
 	
 	@Override
 	public void run() {
-		try {
-			clientSocket = null;
-			localaddress = InetAddress.getLocalHost();
-			clientServerSocket = new ServerSocket(47000, 10, localaddress);
-			
-			while(true) {
-				//accept the connection
-				clientSocket = clientServerSocket.accept();
-				new Thread(new AcceptClient(clientSocket)).start();
-			}
-			
-		} catch (UnknownHostException e) {
-			
-		} catch (IOException e) {
-			
-		}
+        // Déclaration des variables
+ 		InetAddress localAddress = null;
+  		ServerSocket clientServerSocket;
+  		
+  		try {
+  			// Affectation des variables
+  			localAddress = InetAddress.getLocalHost();
+  	 		clientServerSocket = new ServerSocket(47000, 10, localAddress);
+  			
+ 			while(true)
+ 			{
+ 				Socket clientSocket = clientServerSocket.accept();
+ 	 		   	Thread t = new Thread(new AcceptClient(clientSocket));
+ 	 		   	
+ 	 		   	// Démarrage du Thread
+ 	 		   	t.start();
+ 			}
+  		} 
+  		catch 
+  		(IOException ex) {
+  			
+//			ClientFrame.myLogger.setLevel(Level.WARNING);
+//			ClientFrame.myLogger.severe("The port was busy");
+ 		} 
 		
 	}
 	

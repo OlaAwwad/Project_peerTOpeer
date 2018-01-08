@@ -53,10 +53,13 @@ public class CommunicationClientServer implements Runnable
 				if(message_distant.equals("login")) {
 					
 					userName = (String) ois.readObject();
+					System.out.println("username "+ userName);
 
 					passWord = (String) ois.readObject();
+					System.out.println("pwd "+ passWord);
 
 					clientIp = (String) ois.readObject();
+					System.out.println("IP :"+clientIp);
 					
 					ExistedClient tempClient = new ExistedClient(userName, passWord, clientIp);
 
@@ -85,7 +88,6 @@ public class CommunicationClientServer implements Runnable
 					
 					
 					/*Envoi du nombres de clients disponibles*/
-					System.out.println(Server.LoginClients.getSize() + "clients active");
 					
 					ous.writeObject(Server.LoginClients.getSize());
 					ous.flush();
@@ -93,20 +95,23 @@ public class CommunicationClientServer implements Runnable
 					
 					for(ExistedClient client : Server.LoginClients.getListLogin())
 					{
+						System.out.println(client.getUserName()+" send to client");
 						ous.writeObject(client.getUserName());
 						ous.flush();
 						
+						System.out.println("IP is : "+ client.getip());
 						ous.writeObject(client.getip());
 						ous.flush();
 						
 						ous.writeObject(client.getListFiles());
+						System.out.println(client.getListFiles().length+" files to client");
 						ous.flush();
 					}		
 				}
 				if(message_distant.equals("logout"))
 				{
 					/*Receive logout message*/
-					NewClient.disConnected();
+				
 					ois.close();
 					ous.close();
 					socket.close();
@@ -124,17 +129,25 @@ public class CommunicationClientServer implements Runnable
 
 	public void listenInfo() throws IOException, ClassNotFoundException
 	{
+		System.out.println("Add file from "+ userName);
 		/*Réception de la liste de fichiers du client */
 		listOfFiles = (File[]) ois.readObject();
 		
 		
 		for(File file : listOfFiles)
 		{
+			
+			System.out.println("File add : "+ file.getName());
 // 		   	Server.newlog.setLevel(Level.INFO);
 //			Server.myLogger.info("received : "+file.getName());
 		}
 		
+		
+		
 		Server.LoginClients.getClient(Server.LoginClients.getIndex(NewClient)).setListFiles(listOfFiles);
+		
+	
+		
 	}
 
 

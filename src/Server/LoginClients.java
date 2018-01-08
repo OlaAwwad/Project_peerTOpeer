@@ -18,18 +18,25 @@ public class LoginClients {
 
 	private static ArrayList <ExistedClient> listLogin = new ArrayList<ExistedClient>();
 
+	ExistedClient nico = new ExistedClient("Nico", "Nico", "192.168.108.3");
+	ExistedClient vlado = new ExistedClient("Vlado", "Vlado", "192.168.108.1");
+	
+	
+	
 	public LoginClients () 
 	{
-		listLogin.add(new ExistedClient("Nico", "Nico", null));
-		listLogin.add(new ExistedClient("Vlado", "Vlado", null));
+		listLogin.add(nico);
+		listLogin.add(vlado);
 	}
 
 
 	public static ArrayList <ExistedClient> getListLogin() {
+
 		return listLogin;
 	}
 	
 	public static int getSize() {
+	
 		return listLogin.size();
 	}
 	
@@ -38,6 +45,7 @@ public class LoginClients {
 	}
 	
 	public static int getIndex(ExistedClient client) {
+		
 		return listLogin.indexOf(client);
 	}
 	
@@ -45,8 +53,9 @@ public class LoginClients {
 	 * Boolean that return true if the client exists in the "listLogin"
 	 */
 	public boolean checkLogin(ExistedClient client) {
-		if(listLogin.contains(client))
+		if(listLogin.contains(client)) {
 			return true;
+		}
 		return false;
 	}
 }

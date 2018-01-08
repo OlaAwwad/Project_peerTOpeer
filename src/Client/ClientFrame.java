@@ -80,12 +80,7 @@ public class ClientFrame extends JFrame{
 	protected static String ip;
 	protected static File clientFolder;
 	protected static int nbClients;
-	/*Server IP*/
-	private String serverIp = "192.168.108.10";
-	/*InetAddresses*/
-	private InetAddress serverAddress = null;
-	/*Port*/
-	private int port = 45000;
+
 	/*Sockets*/
 	private Socket clientSocket = null;
 	/*Output Stream*/
@@ -107,7 +102,7 @@ public class ClientFrame extends JFrame{
 	
 	
 	private Button myFiles = new Button("my files");
-	protected static JComboBox<Client> clientsList = new JComboBox<Client>();
+	protected static JComboBox<ExistedClient> clientsList = new JComboBox<ExistedClient>();
 	private JLabel clientLabel;
 	protected static JTextPane text = new JTextPane();
 	protected static StyledDocument doc = text.getStyledDocument();
@@ -506,9 +501,8 @@ public class ClientFrame extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					try {
+				try {
 						getFiles();
-						
 						if(clientsList.getItemCount() == 0)
 						{
 							new CustomFormatter().newLog(Level.SEVERE, "NO OTHER CLIENT CONNECTED");
@@ -592,9 +586,11 @@ public class ClientFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if(clientsList.getItemCount() != 0)
 				{
-					Client selected = (Client) clientsList.getSelectedItem();
+					ExistedClient selected = (ExistedClient) clientsList.getSelectedItem();
+					System.out.println(selected.getUserName());
 					modelServer.removeAllElements();
-					for(File file : selected.getListOfFiles())
+					
+					for(File file : selected.getListFiles())
 					{
 						modelServer.addElement(file);
 					}
@@ -759,11 +755,12 @@ public class ClientFrame extends JFrame{
 
 			
 			/*Réception du nombre de clients dipsonibles*/
-			nbClients = (int) oIn.readObject();
+			nbClients = (int)oIn.readObject();
 
 			System.out.println(nbClients);
 				
 			/*Ajoute la jcombox des clients connectés*/
+			
 			clientsList.removeAllItems();
 			/*Réception des clients*/
 			for(int i = 0; i < nbClients; i++)
@@ -771,11 +768,13 @@ public class ClientFrame extends JFrame{
 				String name = (String) oIn.readObject();
 				String ip = (String) oIn.readObject();
 				File[] files = (File[]) oIn.readObject();
-				Client client = new Client(name, ip, files);
-	
-				if(files.length>0)	
-					clientsList.addItem(client);
-	
+		
+				
+				if(!name.equals(this.name))
+					clientsList.addItem(new ExistedClient (name, ip, files));
+					
+					
+				
 			}
 		}
 
