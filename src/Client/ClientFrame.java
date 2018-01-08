@@ -60,6 +60,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import Server.CustomFormatter;
+import Server.ExistedClient;
+import Server.LoginClients;
 
 //====================================================================================================== //
 //----------------------------------------- Class : ClientFrame -----------------------------------------//
@@ -134,10 +136,14 @@ public class ClientFrame extends JFrame{
 	
  	protected static Logger myLogger = Logger.getLogger("TestLog");
  	
- 	public ClientFrame(String username, String ip) {
-		super("Peer to Peer");
+ 	public ClientFrame(String username, String ip, ObjectInputStream input, ObjectOutputStream output, Socket client) {
+		
+ 		super("Peer to Peer");
 		ClientFrame.name=username;
 		this.ip=ip;
+		this.clientSocket=client;
+		this.oIn=input;
+		this.oOut=output;
 		
 		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -195,7 +201,7 @@ public class ClientFrame extends JFrame{
 		myFiles.setFont(font15);
 		myFiles.setHorizontalAlignment(JLabel.CENTER);
 
-		listClientFiles.setEnabled(false);
+		
 		listClientFiles.setForeground(Color.WHITE);
 		listClientFiles.setCellRenderer(new DefaultListCellRenderer());
 		listClientFiles.setBackground(new Color(224,224,224));
@@ -234,7 +240,7 @@ public class ClientFrame extends JFrame{
 
 		listServerFiles.setBackground(new Color(0,0,0,180));
 		listServerFiles.setForeground(Color.WHITE);
-		listServerFiles.addListSelectionListener(new SelectFile());
+
 		listServerFiles.setCellRenderer(new DefaultListCellRenderer());
 		listServerFiles.setBackground(new Color(224,224,224));
 	
@@ -271,48 +277,18 @@ public class ClientFrame extends JFrame{
 		south.setMinimumSize(new Dimension(820, 70));
 		south.setBackground(new Color(255,204,153));
 				
-		enableButtons();
+		
 		
 		createClientFolder(name);
+		
+		loadListOfFiles(getListOfFiles(clientFolder.getAbsolutePath()));
 		
 		runServer();
 				
 	}
 	
-	    // ====================================================================================================== //
-	  	// ------------------------------------ Méthode : disableButtons ---------------------------------------  //
-	  	// ====================================================================================================== //
-	  	// Nom de la méthode : disableButtons                                                                     //
-	  	// Description de la méthode : Désactive des boutons                                                      //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Entrée(s) : -                                                                                          //
-	  	// Sortie : -                                                                                             //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Remarque : -                                                                                           //
-	  	// ------------------------------------------------------------------------------------------------------ //
-		public void disableButtons()
-		{
-			sendButton.setEnabled(false);
-			getButton.setEnabled(false);
-			loadButton.setEnabled(false);
-		}
+
 		
-	  	// ====================================================================================================== //
-	  	// ------------------------------------ Méthode : enableButtons ---------------------------------------   //
-	  	// ====================================================================================================== //
-	  	// Nom de la méthode : enableButtons                                                                      //
-	  	// Description de la méthode : Réactive des boutons                                                       //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Entrée(s) : -                                                                                          //
-	  	// Sortie : -                                                                                             //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Remarque : -                                                                                           //
-	  	// ------------------------------------------------------------------------------------------------------ //
-		public void enableButtons()
-		{
-			sendButton.setEnabled(true);
-			getButton.setEnabled(true);
-		}
 		
 	  	// ====================================================================================================== //
 	  	// ------------------------------------ Méthode : getListOfFiles ---------------------------------------  //
@@ -627,28 +603,7 @@ public class ClientFrame extends JFrame{
 
 		}
 		
-	  	// ====================================================================================================== //
-	  	// ------------------------------------ Méthode : SelectFile ---------------------------------------      //
-	  	// ====================================================================================================== //
-	  	// Nom de la méthode : SelectFile                                                                         //
-	  	// Description de la méthode : Réactive le bouton téléchargement lors de la sélection d'un fichier        //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Entrée(s) : -                                                                                          //
-	  	// Sortie : -                                                                                             //
-	  	// ------------------------------------------------------------------------------------------------------ //
-	  	// Remarque : -                                                                                           //
-	  	// ------------------------------------------------------------------------------------------------------ //
-		
-		class SelectFile implements ListSelectionListener
-		{
 
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				loadButton.setEnabled(true);
-				
-			}
-			
-		}
 	  	// ====================================================================================================== //
 	  	// ------------------------------------ Méthode : AddClick ---------------------------------------        //
 	  	// ====================================================================================================== //
@@ -711,25 +666,7 @@ public class ClientFrame extends JFrame{
 	  	// Remarque : -                                                                                           //
 	  	// ------------------------------------------------------------------------------------------------------ //
 		
-		public void connect() throws IOException 
-		{
-			/*Récupérer adresse ip du serveur depuis un string*/
-			serverAddress = InetAddress.getByName(serverIp);
-			
-			/*Connexion au serveur*/
-			clientSocket = new Socket();
 
-			InetSocketAddress serverSocket = new InetSocketAddress(serverAddress, port);
-			clientSocket.connect(serverSocket, 5);
-			System.out.println(clientSocket.getLocalAddress().getHostAddress());
-			
-			/*Initialisation du object outputstream pour l'envoie d'informations au serveur*/
-			oOut = new ObjectOutputStream(clientSocket.getOutputStream());
-			
-			/*Initialisation du object inputstream pour la réception d'informations depuis le serveur */
-			oIn = new ObjectInputStream(clientSocket.getInputStream());
-			
-		}
 		
 		
 	  	// ====================================================================================================== //
@@ -746,7 +683,7 @@ public class ClientFrame extends JFrame{
 	  	// ------------------------------------------------------------------------------------------------------ //
 		private void createClientFolder(String username)
 		{
-			clientFolder = new File("C:/Leaf/"+username);
+			clientFolder = new File("C:/Snowman/"+username);
 			
 			if(!clientFolder.exists())
 				clientFolder.mkdirs();
@@ -824,6 +761,7 @@ public class ClientFrame extends JFrame{
 			/*Réception du nombre de clients dipsonibles*/
 			nbClients = (int) oIn.readObject();
 
+			System.out.println(nbClients);
 				
 			/*Ajoute la jcombox des clients connectés*/
 			clientsList.removeAllItems();
@@ -834,14 +772,10 @@ public class ClientFrame extends JFrame{
 				String ip = (String) oIn.readObject();
 				File[] files = (File[]) oIn.readObject();
 				Client client = new Client(name, ip, files);
-
-				if(client.getListOfFiles()  != null  && client.getListOfFiles().length !=0 && (!client.getName().equals(ClientFrame.id) && !client.getIp().equals(ClientFrame.ip)))
-				{
+	
+				if(files.length>0)	
 					clientsList.addItem(client);
-					
-					continue;
-				}
-				
+	
 			}
 		}
 

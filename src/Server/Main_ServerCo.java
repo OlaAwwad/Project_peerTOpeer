@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Main_ServerCo {
 	
@@ -96,6 +97,7 @@ public class Main_ServerCo {
 		close.setFocusPainted(false);
 		close.setFont(new Font("Arial", 0, 24));
 		
+		
 		frameServer.add(close);
 		frameServer.setVisible(true);
 		frameServer.pack();
@@ -112,4 +114,6 @@ public class Main_ServerCo {
 			System.exit(0);
 		}	
 	}
+	
+	
 }

@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,7 +31,7 @@ import javax.swing.JTextField;
 
 import Server.CustomFormatter;
 
-public class LoginFrame extends JFrame{
+public class LoginFrame extends JFrame implements KeyListener{
 	
 	private JLabel lblUser = new JLabel("Username");
 	private JLabel lblPassword = new JLabel("Password");
@@ -111,6 +113,7 @@ public class LoginFrame extends JFrame{
 		btnCancel.addActionListener(new Cancel_Click());
 
 		
+		
 	}
 	
 	
@@ -121,6 +124,8 @@ public class LoginFrame extends JFrame{
 			System.exit(0);
 		}
 	}
+	
+	
 	
 	class Connect_Click implements ActionListener {
 
@@ -162,10 +167,11 @@ public class LoginFrame extends JFrame{
 				output.writeObject(MySocket.getLocalAddress().getHostAddress());
 				output.flush();
 				
-				System.out.println("OK");
+				System.out.println("CHECKING LOGIN ....");
 				if((boolean)input.readObject()) {
+					System.out.println("LOGIN OK");
 					dispose();
-					ClientFrame clientFrame = new ClientFrame(username, MySocket.getLocalAddress().getHostAddress());
+					ClientFrame clientFrame = new ClientFrame(username, MySocket.getLocalAddress().getHostAddress(), input, output, MySocket);
 					clientFrame.setVisible(true);
 					new CustomFormatter().newLog(Level.INFO, "Correct login");
 				} else {
@@ -185,6 +191,27 @@ public class LoginFrame extends JFrame{
 			}
 		
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+		if (e.getKeyCode()==KeyEvent.VK_ENTER){
+            btnConnect.doClick();
+		}
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

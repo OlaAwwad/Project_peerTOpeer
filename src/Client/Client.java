@@ -39,6 +39,11 @@ public class Client {
 	public void setListOfFiles(File[] listOfFiles) {
 		this.listOfFiles = listOfFiles;
 	}
+	
+    @Override
+    public String toString() {
+        return name;
+    }
 
 	
 	

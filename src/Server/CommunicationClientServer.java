@@ -40,13 +40,15 @@ public class CommunicationClientServer implements Runnable
 
 	@Override
 	public void run() {
-		System.out.println("Thread started");
+		
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			ous = new ObjectOutputStream(socket.getOutputStream());
 			
 			while(true) {
 				message_distant = (String) ois.readObject();
+				System.out.println(message_distant);
+				
 				// Login
 				if(message_distant.equals("login")) {
 					
@@ -58,7 +60,7 @@ public class CommunicationClientServer implements Runnable
 					
 					ExistedClient tempClient = new ExistedClient(userName, passWord, clientIp);
 
-					ous.writeObject(true);
+					
 					// If the user exists, we allow the connection
 					if(Main_ServerCo.listFilesOfClient.checkLogin(tempClient)) {
 						ous.writeObject(true);
@@ -80,7 +82,11 @@ public class CommunicationClientServer implements Runnable
 				
 				if(message_distant.equals("get"))
 				{
+					
+					
 					/*Envoi du nombres de clients disponibles*/
+					System.out.println(Server.LoginClients.getSize() + "clients active");
+					
 					ous.writeObject(Server.LoginClients.getSize());
 					ous.flush();
 	
@@ -100,6 +106,7 @@ public class CommunicationClientServer implements Runnable
 				if(message_distant.equals("logout"))
 				{
 					/*Receive logout message*/
+					NewClient.disConnected();
 					ois.close();
 					ous.close();
 					socket.close();

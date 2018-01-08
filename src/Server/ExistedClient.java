@@ -23,6 +23,21 @@ public class ExistedClient implements Serializable {
 	private String userName;
 	private String passWord;
 	private String ip;
+	private boolean connected=false;
+	
+	
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void Connected() {
+		this.connected = true;
+	}
+	
+	public void disConnected() {
+		this.connected = false;
+	}
+
 	private int port;
 	private File [] listFiles;
 
@@ -30,7 +45,16 @@ public class ExistedClient implements Serializable {
 	{
 		this.userName = userName;
 		this.passWord = passWord;
+		this.ip=ip;
+		
+	}
 	
+	public ExistedClient (String userName, String passWord, String ip, File[] files) 
+	{
+		this.userName = userName;
+		this.passWord = passWord;
+		this.ip=ip;
+		this.listFiles=files;
 	}
 
 	public String getUserName() {
@@ -75,8 +99,7 @@ public class ExistedClient implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "RegisteredClient [userName=" + userName + ", passWord=" + passWord + ", ip=" + ip + ", listFiles="
-				+ Arrays.toString(listFiles) + "]";
+		return userName + ";" + ip + ";"+ Arrays.toString(listFiles);
 	}
 
 	/**
@@ -85,10 +108,9 @@ public class ExistedClient implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		System.out.println("Check login");
 		ExistedClient c = (ExistedClient) o;
 		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) { 
-			System.out.println("OK");
+			this.Connected();
 			return true;
 		}
 		else
