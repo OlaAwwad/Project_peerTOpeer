@@ -11,6 +11,17 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 
+/**
+ * Project name : PeerToPeer Class : Button
+ *
+ * Date of creation : 28.12.2017
+ * 
+ * Description : Button used in the project
+ * 
+ * @author Vlado Mitrovic
+ */
+
+
 public class Button extends JButton{
 
 	private Font font = new Font ("Century Gothic",Font.BOLD, 15);
@@ -29,7 +40,6 @@ public class Button extends JButton{
 		setFont(font);	
 		setOpaque(true);
 		addMouseListener(new Mouse());
-		
 		
 	}
 	

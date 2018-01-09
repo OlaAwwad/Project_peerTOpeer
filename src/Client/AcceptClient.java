@@ -9,7 +9,15 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-
+/**
+ * Project name : PeerToPeer Class : AcceptClient
+ *
+ * Date of creation : 28.12.2017
+ * 
+ * Description : Thread used to upload the file to the other client
+ * 
+ * @author Vlado Mitrovic
+ */
 
 
 public class AcceptClient implements Runnable {
@@ -30,16 +38,12 @@ public class AcceptClient implements Runnable {
 		try {
 			input=new ObjectInputStream(clientSocket.getInputStream());
 			output= new ObjectOutputStream(clientSocket.getOutputStream());
-			System.out.println("New client is now connected");
-		
 			message=(String)input.readObject();
 		
 			
 			if(message.equals("download")) {
-				System.out.println("Download request");
 				//Get the path of the file to download
 				String path =(String)input.readObject();
-				System.out.println(path+" download");
 				File dwnlFile = new File(path);
 				FileInputStream fileInput = new FileInputStream(dwnlFile);
 				

@@ -32,13 +32,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class Main_ServerCo {
-	
+
 	public static LoginClients listFilesOfClient = new LoginClients();
 
 	public static void main(String[] args) {
-		
+		CommunicationClientServer.serverLogs.newLog(Level.INFO, "Server starting");
 		initialize();
-		
 		ServerSocket serverSocket;
 		Socket socket = null;
 		InetAddress localAddress = null;
@@ -49,36 +48,34 @@ public class Main_ServerCo {
 			Enumeration<InetAddress> inetAddresses = ni.getInetAddresses();
 			while (inetAddresses.hasMoreElements()) {
 				InetAddress ia = inetAddresses.nextElement();
-				if (!ia.isLinkLocalAddress() && !ia.isLoopbackAddress()) 
-				{
-					System.out.println(ni.getName() + "->IP: " + ia.getHostAddress());
+				if (!ia.isLinkLocalAddress() && !ia.isLoopbackAddress()) {
 					localAddress = ia;
 				}
 			}
-		} 
-		catch (SocketException e) {
-			new CustomFormatter().newLog(Level.SEVERE, e.toString());
+		} catch (SocketException e) {
+			CommunicationClientServer.serverLogs.newLog(Level.SEVERE, e.toString());
 		}
 
 		try {
 			serverSocket = new ServerSocket(65535, 10, localAddress);
-			new CustomFormatter().newLog(Level.INFO, "Server launched");
-			
-			// Wait for a client connection and start a thread with the class "CommunicationClientServer"
+			CommunicationClientServer.serverLogs.newLog(Level.INFO, "Server launched");
+
+			// Wait for a client connection and start a thread with the class
+			// "CommunicationClientServer"
 			while (true) {
 				socket = serverSocket.accept();
-				new CustomFormatter().newLog(Level.INFO, "Client with IP " + socket.getInetAddress().getHostAddress() + " connected");
-				System.out.println("Starting thread !!!!");
+				CommunicationClientServer.serverLogs.newLog(Level.INFO,
+						"Client with IP " + socket.getInetAddress().getHostAddress() + " connected");
 				Thread t = new Thread(new CommunicationClientServer(socket));
 				t.start();
 			}
 		} catch (SocketException e) {
-			new CustomFormatter().newLog(Level.SEVERE, e.toString());
+			CommunicationClientServer.serverLogs.newLog(Level.SEVERE, e.toString());
 		} catch (IOException e) {
-			new CustomFormatter().newLog(Level.SEVERE, e.toString());
+			CommunicationClientServer.serverLogs.newLog(Level.SEVERE, e.toString());
 		}
 	}
-	
+
 	/**
 	 * Method that initialize the "interface"
 	 */
@@ -89,20 +86,19 @@ public class Main_ServerCo {
 		frameServer.setUndecorated(true);
 		frameServer.setLocation(50, 100);
 		frameServer.setAlwaysOnTop(true);
-		
+
 		JButton close = new JButton("Shutdown the server");
 		close.addActionListener(new Close());
 		close.setPreferredSize(new Dimension(300, 80));
 		close.setBackground(new Color(255, 100, 100));
 		close.setFocusPainted(false);
 		close.setFont(new Font("Arial", 0, 24));
-		
-		
+
 		frameServer.add(close);
 		frameServer.setVisible(true);
 		frameServer.pack();
 	}
-	
+
 	/**
 	 * Close the server when you press the button
 	 */
@@ -112,8 +108,7 @@ public class Main_ServerCo {
 		public void actionPerformed(ActionEvent e) {
 			new CustomFormatter().newLog(Level.INFO, "Server shutdown !!!");
 			System.exit(0);
-		}	
+		}
 	}
-	
-	
+
 }

@@ -1,38 +1,38 @@
-package Server;
+package Client;
 
 /**
-*  	Project name : PeerToPeer
-*	Class : ExistedClient
-*
-* 	Date of creation : 28.12.2017
-* 	
-*	Description :
-*	Object used to store a client with his username,
-*	his password and his port. The port is set when
-*	we log in.
-* 
-* @author Nicolas Piguet
-*/
+ * Project name : PeerToPeer Class : DistantClient
+ *
+ * Date of creation : 28.12.2017
+ * 
+ * Description : Class that contains data of one other client
+ * 
+ * @author Vlado Mitrovic
+ */
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class ExistedClient implements Serializable {
+public class DistantClient implements Serializable {
 	private String userName;
 	private String passWord;
 	private String ip;
 
 	private File[] listFiles;
 
-	public ExistedClient(String userName, String passWord, String ip) {
+	public DistantClient(String userName, String passWord, String ip) {
 		this.userName = userName;
 		this.passWord = passWord;
 		this.ip = ip;
 
 	}
 
-
+	public DistantClient(String userName, String ip, File[] files) {
+		this.userName = userName;
+		this.ip = ip;
+		this.listFiles = files;
+	}
 
 	public String getUserName() {
 		return userName;
@@ -71,15 +71,4 @@ public class ExistedClient implements Serializable {
 		return userName + " " + ip;
 	}
 
-	/**
-	 * Method that tests the username AND the password
-	 */
-	@Override
-	public boolean equals(Object o) {
-		ExistedClient c = (ExistedClient) o;
-		if (this.userName.equals(c.userName) && this.passWord.equals(c.passWord)) {
-			return true;
-		} else
-			return false;
-	}
 }

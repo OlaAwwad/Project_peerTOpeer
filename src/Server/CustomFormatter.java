@@ -1,5 +1,17 @@
 package Server;
 
+/**
+ *  	Project name : PeerToPeer
+ *	Class : CommunicationClientServer
+ *
+ * 	Date of creation : 28.12.2017
+ * 	
+ *	Description :
+ *	Class for communicating between client & server
+ * 
+ * @author Nicolas Piguet
+ */
+
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -31,55 +43,52 @@ public class CustomFormatter extends Formatter {
 	/**
 	 * Format the logs
 	 */
-	public String format( LogRecord record )
-	{
+
+	
+	public String format(LogRecord record) {
 		// Objet pour assembler des chaînes de caractères
 		StringBuffer sb = new StringBuffer("");
-		
+
 		// Formateur de dates
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-		
+
 		// Ajout de la date au log
-		sb.append( sdf.format( record.getMillis() ) );
-		
+		sb.append(sdf.format(record.getMillis()));
+
 		// Ajout de la classe et de la méthode qui a demandé le log
-		sb.append( "; class.method()=" );
-		sb.append( record.getSourceClassName() );
-		sb.append( "." );
-		sb.append( record.getSourceMethodName() );
-		
+		sb.append("; class.method()=");
+		sb.append(record.getSourceClassName());
+		sb.append(".");
+		sb.append(record.getSourceMethodName());
+
 		// Ajout du niveau de sévérité de l'événement
-		sb.append( "(); level=" );
-		sb.append( record.getLevel().getName() );
-		
+		sb.append("(); level=");
+		sb.append(record.getLevel().getName());
+
 		// Ajout du message de l'événement
-		sb.append( " : ");
-		sb.append( record.getMessage() );
-		
+		sb.append(" : ");
+		sb.append(record.getMessage());
+
 		// Si le log a une Exception associée, on l'affiche
-		if ( record.getThrown() != null )
-		{
-			try
-			{
+		if (record.getThrown() != null) {
+			try {
 				sb.append("\r\n\t");
-				
+
 				// Objet qui récupère les bytes du flux de sortie et les place dans un tableau
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				
-				// Objet qui affiche des caractères dans un flux de sortie (ici, ce sera dans baos)
+
+				// Objet qui affiche des caractères dans un flux de sortie (ici, ce sera dans
+				// baos)
 				PrintStream ps = new PrintStream(baos, true, "UTF-8");
-				
+
 				// On demande au Throwable de s'afficher dans ps (et donc dans baos)
 				// On vient de créer un tableau de bytes contenant les caractères du message
 				// de l'exception
-				record.getThrown().printStackTrace( ps );
-				
+				record.getThrown().printStackTrace(ps);
+
 				// On convertit le tableau de bytes de baos en chaîne de caractères
-				sb.append( new String( baos.toByteArray(), "UTF-8" ) );
-			}
-			catch( Exception e )
-			{
-				new CustomFormatter().newLog(Level.SEVERE, e.toString());
+				sb.append(new String(baos.toByteArray(), "UTF-8"));
+			} catch (Exception e) {
 			}
 		}
 		sb.append("\r\n");
@@ -87,22 +96,22 @@ public class CustomFormatter extends Formatter {
 	}
 
 	/**
-	 * Add a new log to the log directory (level of the log, and a small description)
+	 * Add a new log to the log directory (level of the log, and a small
+	 * description)
 	 */
 	public void newLog(Level level, String text) {
 		Logger myLogger = Logger.getLogger("Logs");
 
-		FileHandler fh = null;		
-						
+		FileHandler fh = null;
+
 		// Check if the directory already exists
-		if (Files.notExists(Paths.get("C:/logs"))) new File("C:/logs").mkdir();
-		
+		if (Files.notExists(Paths.get("C:/Snowman/logs")))
+			new File("C:/Snowman/logs").mkdir();
+
 		// Create one file.log per month
 		try {
-			fh = new FileHandler("C:/logs/" + new SimpleDateFormat("MM-YYYY").format(new Date()) + ".log", true);
-		} 
-		catch (SecurityException | IOException e) {
-			new CustomFormatter().newLog(Level.SEVERE, e.toString());
+			fh = new FileHandler("C:/Snowman/logs/" + new SimpleDateFormat("MM-YYYY").format(new Date()) + ".log", true);
+		} catch (SecurityException | IOException e) {
 		}
 
 		fh.setFormatter(CustomFormatter.this);
