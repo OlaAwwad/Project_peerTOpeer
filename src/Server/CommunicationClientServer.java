@@ -87,11 +87,10 @@ public class CommunicationClientServer implements Runnable {
 				if (message_distant.equals("get")) {
 
 			
-
-					int nbClients =Server.LoginClients.getSize();
-					
-					ous.writeObject(nbClients);
+					System.out.println("before object : "+Server.LoginClients.getSize());
+					ous.writeObject(Server.LoginClients.getSize());
 					ous.flush();
+					System.out.println("after object");
 
 					for (ExistedClient client : Server.LoginClients.getListLogin()) {
 						CommunicationClientServer.serverLogs.newLog(Level.INFO,

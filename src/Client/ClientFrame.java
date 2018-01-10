@@ -414,19 +414,9 @@ public class ClientFrame extends JFrame {
 			ClientFrame.ClientLogs.newLog(Level.INFO, "Create folder for the client");
 			clientFolder.mkdirs();
 		}
-		createClientLogsFolder();
 	}
 
-	// Set the logs directory of the client
-	// Create one if doesn't exist
-	private void createClientLogsFolder() {
-		File logsFolder = new File(clientFolder.getAbsolutePath() + "/logs");
 
-		if (!logsFolder.exists()) {
-			ClientFrame.ClientLogs.newLog(Level.INFO, "Create logs folder for the client");
-			logsFolder.mkdirs();
-		}
-	}
 
 	// Send list of shared files to the server
 	public void sendInfo() throws IOException, BadLocationException {
@@ -448,10 +438,12 @@ public class ClientFrame extends JFrame {
 		ClientFrame.ClientLogs.newLog(Level.INFO, "Send command get");
 		oOut.writeObject("get");
 		oOut.flush();
-		nbClients=0;
 
+		
+		System.out.println("before object");
 		nbClients = (int) oIn.readObject();
-
+		System.out.println("after object : "+nbClients);
+		
 		ClientFrame.ClientLogs.newLog(Level.INFO, "Clients : " + nbClients);
 
 

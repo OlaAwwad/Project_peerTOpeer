@@ -13,9 +13,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 
-import Server.ExistedClient;
 
 /**
  * Project name : PeerToPeer Class : ThreadDownload
@@ -59,8 +57,6 @@ public class ThreadDownload implements Runnable {
 			ObjectInputStream input = new ObjectInputStream(MySocket.getInputStream());
 			int fileSize = (int) input.readLong();
 
-			int progress = 0;
-			JProgressBar bar = new JProgressBar(0, fileSize);
 
 			// Get the file
 			File file = new File(ClientFrame.clientFolder.getAbsolutePath() + "/"
@@ -75,10 +71,8 @@ public class ThreadDownload implements Runnable {
 					"Starting download of" + ClientFrame.listServerFiles.getSelectedValue().getName());
 
 			while ((nbBytes = input.read(data)) > -1) {
-				progress += nbBytes;
 				fileOutput.write(data, 0, nbBytes);
 				fileOutput.flush();
-				bar.setValue(progress);
 			}
 			
 			
