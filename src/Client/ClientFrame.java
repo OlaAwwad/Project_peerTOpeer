@@ -440,9 +440,7 @@ public class ClientFrame extends JFrame {
 		oOut.flush();
 
 		
-		System.out.println("before object");
 		nbClients = (int) oIn.readObject();
-		System.out.println("after object : "+nbClients);
 		
 		ClientFrame.ClientLogs.newLog(Level.INFO, "Clients : " + nbClients);
 
